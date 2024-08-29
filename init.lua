@@ -154,10 +154,18 @@ require('lazy').setup({
 
   {
     -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+  --   'navarasu/onedark.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme 'onedark'
+  --   end,
+  -- },
+  
+  -- Theme inspired by Atom
+    'kepano/flexoki-neovim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'flexoki-dark'
     end,
   },
 
@@ -216,6 +224,26 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+  {
+    'mawkler/modicator.nvim',
+    dependencies = 'mawkler/onedark.nvim', -- Add your colorscheme plugin here
+    init = function()
+      -- These are required for Modicator to work
+      vim.o.cursorline = true
+      vim.o.number = true
+      vim.o.termguicolors = true
+    end,
+    opts = {
+      -- Warn if any required option above is missing. May emit false positives
+      -- if some other plugin modifies them, which in that case you can just
+      -- ignore. Feel free to remove this line after you've gotten Modicator to
+      -- work properly.
+      show_warnings = true,
+    }
+  },
+
+  -- Themes
+  { 'kepano/flexoki-neovim', name = 'flexoki' },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -229,8 +257,9 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
-}, {})
+ { import = 'custom.plugins' },
+}, {
+  })
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -312,6 +341,26 @@ require('telescope').setup {
     },
   },
 }
+
+-- [[Configure noice]]
+require("noice").setup({
+  lsp = {
+    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+    },
+  },
+  -- you can enable a preset for easier configuration
+  presets = {
+    bottom_search = true, -- use a classic bottom cmdline for search
+    command_palette = true, -- position the cmdline and popupmenu together
+    long_message_to_split = true, -- long messages will be sent to a split
+    inc_rename = false, -- enables an input dialog for inc-rename.nvim
+    lsp_doc_border = false, -- add a border to hover docs and signature help
+  },
+})
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
@@ -603,6 +652,72 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+-- vim.opt.termguicolors = true
+
+-- setup nvim-tree with some options
+require("nvim-tree").setup({
+  sort = {
+    sorter = "case_sensitive",
+  },
+  view = {
+    width = 30,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+})
+
+
+-- local options_append = {
+-- 	netrw_keepdir = 0, --Keep the current directory and the browsing directory synced
+-- 	netrw_winsize = "17", -- 17% size
+-- 	netrw_banner = "0", -- hide banner
+-- 	netrw_localmkdir = "mkdir -p", -- change mkdir cmd
+-- 	netrw_localcopycmd = "cp -r", -- change copy command
+-- 	netrw_localrmdir = "rm -r", -- change delete command
+-- 	netrw_list_hide = [['\(^\|\s\s\)\zs\.\S\+']],
+-- }
+
+-- for k, v in pairs(options_append) do
+-- 	g[k] = v
+-- end
+
+-- autocmd("filetype", {
+-- 	pattern = "netrw",
+-- 	desc = "Better mappings for netrw",
+-- 	callback = function()    -- Navigation
+-- 		local bind = function(lhs, rhs)
+-- 			vim.keymap.set("n", lhs, rhs, { remap = true, buffer = true })
+--     end
+-- 		bind("H", "u") -- preview dir
+-- 		bind("h", "-^") -- go up
+-- 		bind("l", "<CR>") -- open file or dir
+-- 		bind(".", "gh") -- toggle dotfiles
+-- 		bind("<leader>dd", ":Lexplore<CR>") -- close if open
+
+-- 		-- Marks
+-- 		bind("<TAB>", "mf") -- toggle mark
+-- 		bind("<S-TAB>", "mF") -- unmark
+-- 		bind("<leader><TAB>", "mu") -- unmark all
+
+-- 		-- Files
+-- 		bind("ff", ":!touch ") -- create file
+-- 		bind("fd", ":!mkdir -p ") -- create folder
+-- 		bind("fm", ":!mv ") -- move/rename
+-- 		bind("fc", ":!cp -r ") -- copy
+-- 		bind("D", ":!rm -r ") -- delete
+-- 		bind("f;", "mx") -- run command
+-- 	end,
+-- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
