@@ -176,7 +176,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'everforest',
+        theme = 'codedark',
         component_separators = '|',
         section_separators = '',
       },
@@ -226,7 +226,7 @@ require('lazy').setup({
   },
   {
     'mawkler/modicator.nvim',
-    dependencies = 'mawkler/onedark.nvim', -- Add your colorscheme plugin here
+    dependencies = 'kepano/flexoki-neovim', -- Add your colorscheme plugin here
     init = function()
       -- These are required for Modicator to work
       vim.o.cursorline = true
